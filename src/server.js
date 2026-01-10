@@ -6,6 +6,7 @@ import pino from 'pino-http';
 const app = express();
 
 // Middleware
+
 app.use(cors());
 app.use(express.json());
 app.use(pino());
@@ -22,16 +23,19 @@ app.get('/notes/:noteId', (req, res) => {
 });
 
 // Error test route
+
 app.get('/test-error', () => {
   throw new Error('Simulated server error');
 });
 
 // 404 handler
+
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
 // Error handler
+
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
