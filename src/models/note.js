@@ -1,21 +1,21 @@
-import { Schema } from 'mongoose';
-import { model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const noteSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
-      trim: true, // прибирає пробіли на початку та в кінці
-    },
-    content: {
-      type: String,
-      required: true,
       trim: true,
     },
+
+    content: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
     tag: {
       type: String,
-      required: true,
       enum: [
         'Work',
         'Personal',
@@ -30,8 +30,10 @@ const noteSchema = new Schema(
       ],
       default: 'Todo',
     },
+
     onDuty: {
       type: Boolean,
+      required: true,
       default: false,
     },
   },
@@ -40,4 +42,5 @@ const noteSchema = new Schema(
     versionKey: false,
   },
 );
+
 export const Note = model('Note', noteSchema);

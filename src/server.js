@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import notesRouter from './routes/notesRoutes.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const app = express();
