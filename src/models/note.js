@@ -30,12 +30,6 @@ const noteSchema = new Schema(
       ],
       default: 'Todo',
     },
-
-    onDuty: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
   },
   {
     timestamps: true,
