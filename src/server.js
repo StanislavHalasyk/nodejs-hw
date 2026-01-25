@@ -22,13 +22,13 @@ app.use(
 );
 app.use(cors());
 
-// Routes (без префікса!)
-app.use(notesRouter);
+// Routes
+app.use('/notes', notesRouter);
 
 // 404 handler
 app.use(notFoundHandler);
 
-// Celebrate errors handler
+// Celebrate validation errors
 app.use(errors());
 
 // Custom error handler
