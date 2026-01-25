@@ -22,8 +22,8 @@ app.use(
 );
 app.use(cors());
 
-// Routes
-app.use('/notes', notesRouter);
+// Routes (БЕЗ префікса, шляхи всередині роутера)
+app.use(notesRouter);
 
 // 404 handler
 app.use(notFoundHandler);
