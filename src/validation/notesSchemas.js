@@ -2,7 +2,6 @@ import { Joi, Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
-// ---- Custom ID validator ----
 const objectIdValidator = (value, helpers) => {
   if (!isValidObjectId(value)) {
     return helpers.message('Invalid id format');
@@ -10,7 +9,6 @@ const objectIdValidator = (value, helpers) => {
   return value;
 };
 
-// ---- Create Note Schema ----
 export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).max(30).required(),
@@ -21,14 +19,12 @@ export const createNoteSchema = {
   }),
 };
 
-// ---- Note ID param ----
 export const noteIdSchema = {
   [Segments.PARAMS]: Joi.object({
     noteId: Joi.string().custom(objectIdValidator).required(),
   }),
 };
 
-// ---- Update Note Schema ----
 export const updateNoteSchema = {
   [Segments.PARAMS]: Joi.object({
     noteId: Joi.string().custom(objectIdValidator).required(),
@@ -37,10 +33,9 @@ export const updateNoteSchema = {
     title: Joi.string().min(1).max(30),
     content: Joi.string().allow(''),
     tag: Joi.string().valid(...TAGS),
-  }).min(1), // хоча б одне поле обов’язково
+  }).min(1),
 };
 
-// ---- Get All Notes Schema ----
 export const getAllNotesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),

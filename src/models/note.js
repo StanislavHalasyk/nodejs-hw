@@ -27,7 +27,6 @@ const noteSchema = new Schema(
   },
 );
 
-// Text index для пошуку
 noteSchema.index({ title: 'text', content: 'text' });
 
 export const Note = model('Note', noteSchema);

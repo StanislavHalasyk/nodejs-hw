@@ -1,7 +1,6 @@
 import createHttpError from 'http-errors';
 import { Note } from '../models/note.js';
 
-// GET /notes?tag=&search=&page=&perPage=
 export const getAllNotes = async (req, res, next) => {
   try {
     let { page = 1, perPage = 10, tag, search } = req.query;
@@ -12,12 +11,10 @@ export const getAllNotes = async (req, res, next) => {
 
     const filter = {};
 
-    // фільтр по tag
     if (tag) {
       filter.tag = tag;
     }
 
-    // текстовий пошук
     if (search) {
       filter.$text = { $search: search };
     }
@@ -41,7 +38,6 @@ export const getAllNotes = async (req, res, next) => {
   }
 };
 
-// GET /notes/:noteId
 export const getNoteById = async (req, res, next) => {
   try {
     const { noteId } = req.params;
@@ -57,7 +53,6 @@ export const getNoteById = async (req, res, next) => {
   }
 };
 
-// POST /notes
 export const createNote = async (req, res, next) => {
   try {
     const note = await Note.create(req.body);
@@ -67,7 +62,6 @@ export const createNote = async (req, res, next) => {
   }
 };
 
-// DELETE /notes/:noteId
 export const deleteNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
@@ -84,7 +78,6 @@ export const deleteNote = async (req, res, next) => {
   }
 };
 
-// PATCH /notes/:noteId
 export const updateNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
