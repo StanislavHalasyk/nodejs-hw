@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
+import { authenticate } from '../middlewares/authenticate.js';
+
 import {
   getAllNotes,
   getNoteById,
@@ -18,14 +20,13 @@ import {
 
 const router = Router();
 
+// 🔐 Захищає ВСІ /notes
+router.use(authenticate);
+
 router.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
-
 router.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
-
 router.post('/notes', celebrate(createNoteSchema), createNote);
-
 router.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
-
 router.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
 
 export default router;
