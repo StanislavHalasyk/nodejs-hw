@@ -8,7 +8,7 @@ export const updateUserAvatar = async (req, res, next) => {
       return next(createHttpError(400, 'Avatar file is required'));
     }
 
-    const result = await saveFileToCloudinary(req.file.buffer, req.user._id);
+    const result = await saveFileToCloudinary(req.file.buffer);
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
@@ -17,7 +17,7 @@ export const updateUserAvatar = async (req, res, next) => {
     );
 
     res.status(200).json({
-      avatar: updatedUser.avatar,
+      url: updatedUser.avatar,
     });
   } catch (error) {
     next(error);
