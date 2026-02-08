@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
 const noteSchema = new Schema(
@@ -8,20 +8,23 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
+
     content: {
       type: String,
-      trim: true,
       default: '',
+      trim: true,
     },
+
     tag: {
       type: String,
       enum: TAGS,
       default: 'Todo',
     },
+    // Нова властивість
     userId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true, // обов’язкове поле
+      required: true,
     },
   },
   {
@@ -30,6 +33,7 @@ const noteSchema = new Schema(
   },
 );
 
+// текстовий індекс
 noteSchema.index({ title: 'text', content: 'text' });
 
 export const Note = model('Note', noteSchema);

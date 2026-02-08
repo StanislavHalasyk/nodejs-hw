@@ -1,28 +1,33 @@
 import createHttpError from 'http-errors';
 import { Note } from '../models/note.js';
 
+// GET /notes?tag=&search=&page=&perPage=
 export const getAllNotes = async (req, res, next) => {
   try {
-    const { _id: userId } = req.user;
     let { page = 1, perPage = 10, tag, search } = req.query;
 
     page = Number(page);
     perPage = Number(perPage);
     const skip = (page - 1) * perPage;
 
-    let query = Note.find().where('userId').equals(userId);
+    // БАЗОВИЙ ФІЛЬТР — ТІЛЬКИ НОТАТКИ ПОТОЧНОГО КОРИСТУВАЧА
+    const filter = {
+      userId: req.user._id,
+    };
 
+    // фільтр по tag
     if (tag) {
-      query = query.where('tag').equals(tag);
+      filter.tag = tag;
     }
 
+    // текстовий пошук (через text index)
     if (search) {
-      query = query.where({ $text: { $search: search } });
+      filter.$text = { $search: search };
     }
 
     const [totalNotes, notes] = await Promise.all([
-      Note.countDocuments(query.getFilter()),
-      query.skip(skip).limit(perPage),
+      Note.countDocuments(filter),
+      Note.find(filter).skip(skip).limit(perPage),
     ]);
 
     const totalPages = Math.ceil(totalNotes / perPage);
@@ -39,14 +44,14 @@ export const getAllNotes = async (req, res, next) => {
   }
 };
 
+// GET /notes/:noteId
 export const getNoteById = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const { _id: userId } = req.user;
 
     const note = await Note.findOne({
       _id: noteId,
-      userId,
+      userId: req.user._id, // перевірка власника
     });
 
     if (!note) {
@@ -59,13 +64,12 @@ export const getNoteById = async (req, res, next) => {
   }
 };
 
+// POST /notes
 export const createNote = async (req, res, next) => {
   try {
-    const { _id: userId } = req.user;
-
     const note = await Note.create({
       ...req.body,
-      userId,
+      userId: req.user._id, // прив’язка до користувача
     });
 
     res.status(201).json(note);
@@ -74,14 +78,14 @@ export const createNote = async (req, res, next) => {
   }
 };
 
+// DELETE /notes/:noteId
 export const deleteNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const { _id: userId } = req.user;
 
     const note = await Note.findOneAndDelete({
       _id: noteId,
-      userId,
+      userId: req.user._id, // тільки свої
     });
 
     if (!note) {
@@ -94,13 +98,16 @@ export const deleteNote = async (req, res, next) => {
   }
 };
 
+// PATCH /notes/:noteId
 export const updateNote = async (req, res, next) => {
   try {
     const { noteId } = req.params;
-    const { _id: userId } = req.user;
 
     const note = await Note.findOneAndUpdate(
-      { _id: noteId, userId },
+      {
+        _id: noteId,
+        userId: req.user._id, // тільки свої
+      },
       req.body,
       { new: true },
     );
